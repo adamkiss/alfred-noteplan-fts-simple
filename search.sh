@@ -11,8 +11,9 @@ local regex=`echo "$query" | ./lib/jq-osx-amd64 -cRr '
     | gsub("\\\s+"; " ") # collapse spaces
     | gsub("^\\\s+"; "") # trim beginning
     | gsub("\\\s+$"; "") # trim end
-    | gsub("\\\s"; "* ") # replace spaces with wildcard
-    + "*"
+    | split(" ")
+    | map(. + "(?s:(?!" + . + ").)*?")
+    | join("")
 '`
 
 local matches=`./lib/rg --pcre2 -iU --max-count=1 "$regex" "$root/Notes" "$root/Calendar"`
