@@ -5,6 +5,7 @@ local calendar_format=`echo "$format_calendar_title"`
 
 local query="$1"
 
+# Generate the regex from the query
 local regex=`echo "$query" | ./lib/jq-osx-amd64 -cRr '
     .
     | gsub("[^\\\p{L}\\\s\\\d]"; "") #remove everything except letters, numbers and spaces
@@ -16,9 +17,11 @@ local regex=`echo "$query" | ./lib/jq-osx-amd64 -cRr '
     | join("")
 '`
 
+# Get the actual file matches
 local matches=`./lib/rg --pcre2 -iU --max-count=1 "$regex" "$root/Notes" "$root/Calendar"`
 
-local items=`echo "$matches" | ./lib/jq-osx-amd64 -sR "
+# Transform the matches into an alfred result list and append the "Create new note" item
+local items=`echo "$matches" | ./lib/jq-osx-amd64 -csR "
     def callback_openNote(path): (\"noteplan://x-callback-url/openNote?filename=\" + (path | @uri));
     def callback_openCalendar(date): (\"noteplan://x-callback-url/openNote?noteDate=\" + date);
     .
@@ -41,7 +44,7 @@ local items=`echo "$matches" | ./lib/jq-osx-amd64 -sR "
                     ) | fromdate | strftime(\"$calendar_format\"),
                     subtitle: .match | gsub(\"\\\\\\s\"; \" \"),
                     icon: {path: \"icons/icon-calendar.icns\"},
-                    arg: (callback_openCalendar(.path[0:8]) + \"&useExistingSubWindow=true\"),
+                    arg: (callback_openCalendar(.path[0:8]) + \"&useExistingSubWindow=yes\"),
                     mods: {
                         cmd: {
                             arg: (callback_openCalendar(.path[0:8]) + \"&subWindow=yes\"),
@@ -54,7 +57,7 @@ local items=`echo "$matches" | ./lib/jq-osx-amd64 -sR "
                     title: .path | capture(\"^(?<skip>.*/)(?<title>.*?).md$\") | .title,
                     subtitle: ((.path | capture(\"^(?<path>.*)/.*$\") | .path) + \" • \" + (.match | gsub(\"\\\\\\s\"; \" \"))),
                     icon: {path: \"icons/icon-note.icns\"},
-                    arg: (callback_openNote(.path) + \"&useExistingSubWindow=true\"),
+                    arg: (callback_openNote(.path) + \"&useExistingSubWindow=yes\"),
                     mods: {
                         cmd: {
                             arg: (callback_openNote(.path) + \"&subWindow=yes\"),
@@ -73,4 +76,5 @@ local items=`echo "$matches" | ./lib/jq-osx-amd64 -sR "
     | {items: .}
 "`
 
+# hell yeah
 echo $items
