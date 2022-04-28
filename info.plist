@@ -286,7 +286,7 @@
 	<key>readme</key>
 	<string>Simpler little brother of my big Noteplan Full-Text Search workflow.
 
-Uses bundled CLI tools to be fully self-sufficient</string>
+Uses bundled CLI tools to be fully self-sufficient.</string>
 	<key>uidata</key>
 	<dict>
 		<key>178C476E-3AF1-4ABC-8337-BF2AB2C558D9</key>
@@ -364,7 +364,7 @@ title: {title}
 		<string>np_root</string>
 	</array>
 	<key>version</key>
-	<string>1.0.0</string>
+	<string>0.1.0</string>
 	<key>webaddress</key>
 	<string>https://adamkiss.com</string>
 </dict>
