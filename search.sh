@@ -39,32 +39,36 @@ local items=`echo "$matches" | ./lib/jq-osx-amd64 -csR "
         .
         | if (.type == \"Calendar\") then
             {
-                    title: (
+                title: (if (.path | test(\"-W\")) then
+                    .path[0:4] + \" Week \" + .path[6:8] 
+                else
+                    (
                         .path[0:4] + \"-\" + .path[4:6] + \"-\" + .path[6:8] + \"T12:00:00Z\"
-                    ) | fromdate | strftime(\"$calendar_format\"),
-                    subtitle: .match | gsub(\"\\\\\\s\"; \" \"),
-                    icon: {path: \"icons/icon-calendar.icns\"},
-                    arg: (callback_openCalendar(.path[0:8]) + \"&useExistingSubWindow=yes\"),
-                    mods: {
-                        cmd: {
-                            arg: (callback_openCalendar(.path[0:8]) + \"&subWindow=yes\"),
-                            subtitle: \"Open in a new window\"
-                        }
+                    ) | fromdate | strftime(\"$calendar_format\")
+                end),
+                subtitle: .match | gsub(\"\\\\\\s\"; \" \"),
+                icon: {path: \"icons/icon-calendar.icns\"},
+                arg: (callback_openCalendar(.path[0:8]) + \"&useExistingSubWindow=yes\"),
+                mods: {
+                    cmd: {
+                        arg: (callback_openCalendar(.path[0:8]) + \"&subWindow=yes\"),
+                        subtitle: \"Open in a new window\"
                     }
                 }
+            }
         else
             {
-                    title: .path | capture(\"^(?<skip>.*/)(?<title>.*?).md$\") | .title,
-                    subtitle: ((.path | capture(\"^(?<path>.*)/.*$\") | .path) + \" • \" + (.match | gsub(\"\\\\\\s\"; \" \"))),
-                    icon: {path: \"icons/icon-note.icns\"},
-                    arg: (callback_openNote(.path) + \"&useExistingSubWindow=yes\"),
-                    mods: {
-                        cmd: {
-                            arg: (callback_openNote(.path) + \"&subWindow=yes\"),
-                            subtitle: \"Open in a new window\"
-                        }
+                title: .path | capture(\"^(?<skip>.*/)(?<title>.*?).md$\") | .title,
+                subtitle: ((.path | capture(\"^(?<path>.*)/.*$\") | .path) + \" • \" + (.match | gsub(\"\\\\\\s\"; \" \"))),
+                icon: {path: \"icons/icon-note.icns\"},
+                arg: (callback_openNote(.path) + \"&useExistingSubWindow=yes\"),
+                mods: {
+                    cmd: {
+                        arg: (callback_openNote(.path) + \"&subWindow=yes\"),
+                        subtitle: \"Open in a new window\"
                     }
                 }
+            }
         end
     )
     | . + [{

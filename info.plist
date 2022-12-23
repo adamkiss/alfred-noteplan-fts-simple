@@ -364,7 +364,7 @@ title: {title}
 		<string>np_root</string>
 	</array>
 	<key>version</key>
-	<string>0.1.0</string>
+	<string>0.2.0</string>
 	<key>webaddress</key>
 	<string>https://adamkiss.com</string>
 </dict>
