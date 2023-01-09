@@ -1,7 +1,9 @@
 
-# Full-text (scripted) Noteplan search for Alfred
+# 🛑 Full-text (scripted) Noteplan search for Alfred
 
-![OG Social image](social.jpg)
+**DISCONTINUED** - I've rewritten the "big brother" workflow to use a standalone binary program written in Dart, so this one is pointless. See [Noteplan Full-Text Search for Alfred](https://github.com/adamkiss/alfred-noteplan-fts).
+
+---
 
 A simpler version of my [Noteplan Full-Text Search for Alfred](https://github.com/adamkiss/alfred-noteplan-fts) for non-programmers. Useful if you can't/don't want to setup Homebrew/PHP for the bigger brother.
 
